@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tactical Operations Planning Template</title>
+  <meta name="description" content="Browser-based planning, MGRS-style coordinate estimation, terrain review, and non-operational risk dashboard template.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">TO</div>
+        <div><h1>Tactical Ops</h1><p>Planning Template</p></div>
+      </div>
+      <nav>
+        <a href="#dashboard" class="active">Dashboard</a>
+        <a href="#mgrs">MGRS / Location</a>
+        <a href="#risk">Risk Review</a>
+        <a href="#terrain">Terrain Matrix</a>
+        <a href="#resources">Resources</a>
+        <a href="#report">Report</a>
+        <a href="#docs">Docs</a>
+      </nav>
+      <div class="notice small"><strong>Use:</strong> training, emergency planning, navigation practice, and documentation. Not a live combat decision system.</div>
+    </aside>
+
+    <main>
+      <header class="hero" id="dashboard">
+        <div>
+          <p class="eyebrow">Integrated browser app</p>
+          <h2>Operations Planning Dashboard</h2>
+          <p class="lede">A comprehensive HTML conversion of the uploaded Python prototypes: MGRS-style estimation, distance calculation, terrain scoring, logistics tracking, and printable reports.</p>
+        </div>
+        <div class="status-card">
+          <span class="pulse"></span>
+          <strong id="overallStatus">Ready</strong>
+          <small id="overallSummary">Enter scenario data to generate a structured review.</small>
+        </div>
+      </header>
+
+      <section class="grid cards">
+        <article class="card"><span>Risk Index</span><strong id="riskIndex">—</strong><small>Calculated from terrain, proximity, weather, resources, and mission factors.</small></article>
+        <article class="card"><span>Estimated Coordinate</span><strong id="mgrsOutput">—</strong><small>Approximate MGRS-style display from latitude/longitude or estimator.</small></article>
+        <article class="card"><span>Distance</span><strong id="distanceOutput">—</strong><small>Haversine distance between friendly and reference point.</small></article>
+        <article class="card"><span>Report State</span><strong id="saveState">Unsaved</strong><small>Data saves locally in this browser.</small></article>
+      </section>
+
+      <section class="panel" id="mgrs">
+        <div class="section-head"><div><p class="eyebrow">Module 01</p><h3>MGRS / Location Estimator</h3></div><button id="useChatham" class="ghost">Load Chatham Example</button></div>
+        <div class="two-col">
+          <form id="mgrsForm" class="form-grid">
+            <label>Angle of sun above horizon <input type="number" id="angleSun" value="42" step="0.1"></label>
+            <label>Landmark angle A <input type="number" id="angleA" value="24" step="0.1"></label>
+            <label>Landmark angle B <input type="number" id="angleB" value="47" step="0.1"></label>
+            <label>Landmark angle C <input type="number" id="angleC" value="63" step="0.1"></label>
+            <label>Distance A km <input type="number" id="distA" value="3.5" step="0.1"></label>
+            <label>Distance B km <input type="number" id="distB" value="5.2" step="0.1"></label>
+            <label>Distance C km <input type="number" id="distC" value="7.1" step="0.1"></label>
+            <label>Base latitude <input type="number" id="baseLat" value="42.405" step="0.000001"></label>
+            <label>Base longitude <input type="number" id="baseLon" value="-82.195" step="0.000001"></label>
+            <button type="button" id="calculateMgrs">Calculate Estimate</button>
+          </form>
+          <div class="output-box">
+            <h4>Location Output</h4>
+            <dl>
+              <dt>Estimated latitude</dt><dd id="latOut">—</dd>
+              <dt>Estimated longitude</dt><dd id="lonOut">—</dd>
+              <dt>MGRS-style coordinate</dt><dd id="mgrsDetail">—</dd>
+              <dt>Landmark distances</dt><dd id="landmarkDistances">—</dd>
+            </dl>
+            <div class="mini-map"><div id="mapPin"></div><span>Concept map preview</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="risk">
+        <div class="section-head"><div><p class="eyebrow">Module 02</p><h3>Scenario Risk Review</h3></div><button id="sampleRisk" class="ghost">Load Sample</button></div>
+        <form id="riskForm" class="form-grid wide">
+          <label>Terrain conditions (-10 worst to +10 best)<input type="number" id="terrainScore" min="-10" max="10" value="2"></label>
+          <label>Weather conditions (-10 to +10)<input type="number" id="weatherScore" min="-10" max="10" value="1"></label>
+          <label>Friendly units<input type="number" id="friendlyUnits" min="0" value="8"></label>
+          <label>Opposing/unknown units estimate<input type="number" id="enemyUnits" min="0" value="5"></label>
+          <label>Friendly latitude<input type="number" id="friendlyLat" value="42.405" step="0.000001"></label>
+          <label>Friendly longitude<input type="number" id="friendlyLon" value="-82.195" step="0.000001"></label>
+          <label>Reference latitude<input type="number" id="enemyLat" value="42.385" step="0.000001"></label>
+          <label>Reference longitude<input type="number" id="enemyLon" value="-82.235" step="0.000001"></label>
+          <label>Mission objective<select id="missionObjective"><option>Reconnaissance</option><option>Secure route</option><option>Search and rescue</option><option>Supply movement</option><option>Training exercise</option><option>Other</option></select></label>
+          <label>Notes<textarea id="missionNotes" rows="4" placeholder="Context, assumptions, constraints, communications, safety notes..."></textarea></label>
+          <button type="button" id="calculateRisk">Calculate Risk Review</button>
+        </form>
+        <div class="recommendation" id="recommendationBox">No review generated yet.</div>
+      </section>
+
+      <section class="panel" id="terrain">
+        <div class="section-head"><div><p class="eyebrow">Module 03</p><h3>Terrain Matrix</h3></div><button id="randomTerrain" class="ghost">Generate Matrix</button></div>
+        <div class="matrix-wrap"><div id="terrainMatrix" class="matrix"></div></div>
+      </section>
+
+      <section class="panel" id="resources">
+        <div class="section-head"><div><p class="eyebrow">Module 04</p><h3>Resource Tracker</h3></div><button id="addResource" class="ghost">Add Row</button></div>
+        <table class="resource-table"><thead><tr><th>Category</th><th>Type</th><th>Quantity</th><th>Condition</th><th>Notes</th><th></th></tr></thead><tbody id="resourceRows"></tbody></table>
+      </section>
+
+      <section class="panel" id="report">
+        <div class="section-head"><div><p class="eyebrow">Module 05</p><h3>Report Builder</h3></div><div class="button-row"><button id="saveLocal" class="ghost">Save</button><button id="loadLocal" class="ghost">Load</button><button id="clearLocal" class="ghost">Clear</button><button id="printReport">Print / PDF</button></div></div>
+        <pre id="reportText" class="report-text">Generate a risk review to populate the report.</pre>
+      </section>
+
+      <section class="panel" id="docs">
+        <div class="section-head"><div><p class="eyebrow">Reference</p><h3>Template Notes</h3></div></div>
+        <div class="docs-grid">
+          <article><h4>Converted concepts</h4><p>Latitude estimator, landmark distance calculations, approximate MGRS-style formatting, terrain scoring, scenario risk review, resource tracker, and report export.</p></article>
+          <article><h4>Data storage</h4><p>This template uses browser localStorage. No server is required. Open <code>index.html</code> directly or host the folder on any static web server.</p></article>
+          <article><h4>Accuracy</h4><p>The original Python files used placeholder logic in several places. This HTML version keeps those ideas as training/planning aids and labels approximate calculations clearly.</p></article>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
